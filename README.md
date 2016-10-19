@@ -44,14 +44,14 @@ EJEMPLO COMPLETO
 var path = require('path');
 var express = require('express');
 var app = express();
-var liveRoutes = require("live-routes");
-var route = liveRoutes.init({
+var lr = require("live-routes");
+var routes = lr.init({
     pathControllers:path.join(__dirname,'controllers'),
     pathMiddlewares:path.join(__dirname,'middlewares'),
 })  
-require('./routes')(route);
+require('./routes')(routes);
 
-app.use('/',route.getPublish());
+app.use('/',lr.getPublish());
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
