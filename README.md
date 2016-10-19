@@ -10,7 +10,7 @@ PRE-REQUISITOS
 2. Directorio Middlewares
 3. express nodejs
 
-INSTALLATCIÓN
+INSTALACIÓN
 ===================
 
 1. Instalar NPM <https://nodejs.org/en/>
