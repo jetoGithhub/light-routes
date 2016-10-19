@@ -1,0 +1,21 @@
+{
+  "name": "live-routes",
+  "version": "0.0.1",
+  "description": "Modulo para menejar de manera mas agradable la publicacion de rutas express en node",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://nose"
+  },
+  "author": "Jefferson Lara",
+  "license": "Apache-2",
+  "dependencies": {
+    "express": "~4.14.0"
+  }
+}
