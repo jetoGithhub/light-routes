@@ -1,11 +1,16 @@
-OVERVIEW
+DESCRIPCIÓN
 ========
 Modulo que maneja de foma modular la publicacion de las rutas para Api nodeJs
 
 Nombre : live-routes
 
+PRE-REQUISITOS
+===================
+1. Directorio controllers
+2. Directorio Middlewares
+3. express nodejs
 
-INSTALLATION
+INSTALLATCIÓN
 ===================
 
 1. Instalar NPM <https://nodejs.org/en/>
