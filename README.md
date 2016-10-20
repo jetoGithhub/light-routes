@@ -17,7 +17,7 @@ INSTALACIÓN
 ```
 sudo npm install npm install git+http://git.sigis.com.ve/jlara/live-routes.git --save 
 ```
-DEPLOYMENT
+USO
 =================================
 Para utilizar el modulo dentro de tu estructura y modulos debes tener los siguientes requirimientos minimo
 
@@ -64,7 +64,7 @@ app.listen(3000, function () {
 
 ```
 
-AUTHORS
+AUTORES
 =======
 
 Jefferson Lara <jefferson.lara@sigis.com.ve>
