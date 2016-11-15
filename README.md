@@ -15,7 +15,7 @@ INSTALACIÓN
 
 1. Instalar NPM <https://nodejs.org/en/>
 ```
-sudo npm install npm install git+http://git.sigis.com.ve/jlara/live-routes.git --save 
+sudo npm install npm install git+http://git.sigis.com.ve/jlara/light-routes.git --save 
 ```
 USO
 =================================
