@@ -1,8 +1,8 @@
 {
-  "name": "live-routes",
-  "version": "0.0.1",
+  "name": "light-routes",
+  "version": "1.0.0",
   "description": "Modulo para menejar de manera mas agradable la publicacion de rutas express en node",
-  "main": "index.js",
+  "main": "src/index.js",
   "directories": {
     "test": "test"
   },
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://git.sigis.com.ve/jlara/live-routes.git"
+    "url": "http://git.sigis.com.ve/jlara/light-routes.git"
   },
   "author": "Jefferson Lara",
   "license": "Apache-2",
