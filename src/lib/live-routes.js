@@ -21,6 +21,7 @@ liveRoutes.init = function (config) {
         var controllers = require(_config.pathControllers);
         var middlewares = require(_config.pathMiddlewares);
         /**
+         * Metodo que mapea se encarga de buscar el merodo del controlador indicado en el string que recibe
          *
          * @param value
          * @returns {*}
@@ -44,6 +45,7 @@ liveRoutes.init = function (config) {
 
         }
         /**
+         * Metodo que se encarga de resolver los middlewares que se le stan solicitnado a la ruta
          *
          * @param fnc
          * @param array
@@ -53,13 +55,19 @@ liveRoutes.init = function (config) {
         var _join = function (fnc,array) {
             var _fncs = [];
             array.forEach(function (d,i) {
-                if(middlewares[d]){
-                    _fncs.push(middlewares[d]);
-                }else if(typeof fnc == 'string' && fnc.indexOf("?") !== -1){
-                    var separate = fnc.split('?');
-                    var ctrl = separate[0];
-                    if(controllers[ctrl] && controllers[ctrl][d])
-                        _fncs.push(controllers[ctrl][d])
+
+                if(typeof d == 'function'){
+                    _fncs.push(d);
+                }else {
+
+                    if (middlewares[d]) {
+                        _fncs.push(middlewares[d]);
+                    } else if (typeof fnc == 'string' && fnc.indexOf("?") !== -1) {
+                        var separate = fnc.split('?');
+                        var ctrl = separate[0];
+                        if (controllers[ctrl] && controllers[ctrl][d])
+                            _fncs.push(controllers[ctrl][d])
+                    }
                 }
             })
             _fncs.push(_getController(fnc));
