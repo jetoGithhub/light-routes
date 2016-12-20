@@ -29,7 +29,7 @@ El modulo esta compuesto por los siguinetes metodos
 1. init este metodo inicializa la configuracion y el modulo live.routes, recibe como parametro un objeto con la ruta de los directorios controllers y middlewares
 ```
 var path = require('path')
-var lr = require('live-routes');
+var lr = require('light-routes');
 var routes = lr.init({
     pathControllers:path.join(__dirname,'controllers'),
     pathMiddlewares:path.join(__dirname,'middlewares'),
