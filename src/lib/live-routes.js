@@ -35,7 +35,7 @@ liveRoutes.init = function (config) {
                 var ctrl = separate[0];
                 var method = separate[1];
                 if(controllers[ctrl] && controllers[ctrl][method]) {
-                    return controllers[ctrl][method];
+                    return controllers[ctrl][method].bind(controllers[ctrl]);
                 }else{
                     throw new Error('Controller '+ctrl+' or method '+method+' not defined');
                 }
@@ -66,7 +66,7 @@ liveRoutes.init = function (config) {
                         var separate = fnc.split('?');
                         var ctrl = separate[0];
                         if (controllers[ctrl] && controllers[ctrl][d])
-                            _fncs.push(controllers[ctrl][d])
+                            _fncs.push(controllers[ctrl][d].bind(controllers[ctrl]))
                     }
                 }
             })
@@ -97,7 +97,7 @@ liveRoutes.init = function (config) {
                 router[type](endPoint,methods)
             },
             /**
-             * Metodo que devuleve la objeto router de espress que contiene las rutas del api
+             * Metodo que devuleve el objeto router de express que contiene las rutas del api
              *
              * @author Jefferson Lara
              * @date 08-10-2016
