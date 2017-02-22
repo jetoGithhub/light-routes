@@ -1,3 +1,4 @@
+const express = require("express");
 /**
  * Objeto encaragdo de manipular el objeto router de express y la publicacion de los
  * endpoint del api
@@ -7,7 +8,6 @@
  * @date 19-10-2016.
  */
 var liveRoutes = function () {
-
     throw 'Error: live routes no puede ser istnaciada por e operador new, utilice el metodo init'
 }
 
@@ -16,10 +16,26 @@ liveRoutes.init = function (config) {
     var _config = config || {};
 
     var mapRoputes = (function () {
-        var express = require("express");
-        var router = express.Router();
-        var controllers = require(_config.pathControllers);
-        var middlewares = require(_config.pathMiddlewares);
+        let router = express.Router();
+        let controllers = null;
+        let middlewares = null;
+        let defaultMiddleware = [];
+
+        if(_config && _config.defaultMiddleware){
+            defaultMiddleware = _config.defaultMiddleware;
+        }
+
+        if (_config && _config.controllers) {
+            controllers = _config.controllers;
+        } else {
+            controllers = require(_config.pathControllers);
+        }
+
+        if (_config && _config.middlewares) {
+            middlewares = _config.middlewares;
+        } else {
+            middlewares = require(_config.pathMiddlewares);
+        }
         /**
          * Metodo que mapea se encarga de buscar el merodo del controlador indicado en el string que recibe
          *
@@ -27,22 +43,22 @@ liveRoutes.init = function (config) {
          * @returns {*}
          * @private
          */
-        var _getController = function (value) {
+        var resolveController = function (value) {
             if(typeof value == 'function')
                 return value
-            if(typeof value == 'string' && value.indexOf("?") !== -1){
-                var separate = value.split('?');
-                var ctrl = separate[0];
-                var method = separate[1];
-                if(controllers[ctrl] && controllers[ctrl][method]) {
-                    return controllers[ctrl][method].bind(controllers[ctrl]);
-                }else{
-                    throw new Error('Controller '+ctrl+' or method '+method+' not defined');
+            if( typeof value == 'string' && value.indexOf("?") !== -1 ){
+                let separate = value.split('?');
+                let controllerName = separate[0];
+                let method = separate[1];
+                if(controllers[controllerName] && controllers[controllerName][method]) {
+                    let controller = controllers[controllerName];
+                    return controller[method].bind(controller);
+                } else {
+                    throw new Error('Controller '+controllerName+' or method '+method+' not defined');
                 }
-            }else{
+            } else {
                 throw new Error('String '+value+' unresolved ');
             }
-
         }
         /**
          * Metodo que se encarga de resolver los middlewares que se le stan solicitnado a la ruta
@@ -52,26 +68,39 @@ liveRoutes.init = function (config) {
          * @returns {Array}
          * @private
          */
-        var _join = function (fnc,array) {
-            var _fncs = [];
-            array.forEach(function (d,i) {
+        var resolveMiddleware = function (fnc,middlewareArray) {
+            var middlewareStack = [];
+            middlewareArray.forEach(function (middlewareName,i) {
+                if( typeof middlewareName == 'function' ){
+                    middlewareStack.push(middlewareName);
+                } else {
+                    if ( middlewares[middlewareName] ) {
+                        middlewareStack.push(middlewares[middlewareName]);
+                    } else if ( typeof middlewareName == 'string') {
+                        if( middlewareName.indexOf("?") >= 0 ){
+                            let separate        = middlewareName.split('?');
+                            let controllerName  = separate[0];
+                            let middlewareFn    = separate[1];
+                            if (controllers[controllerName] && controllers[controllerName][middlewareFn]){
+                                let controller = controllers[controllerName];
+                                middlewareStack.push(controller[middlewareFn].bind(controller));
+                            }
+                        } else {
+                            let separate = fnc.split('?');
+                            let controllerName  = separate[0];
 
-                if(typeof d == 'function'){
-                    _fncs.push(d);
-                }else {
-
-                    if (middlewares[d]) {
-                        _fncs.push(middlewares[d]);
-                    } else if (typeof fnc == 'string' && fnc.indexOf("?") !== -1) {
-                        var separate = fnc.split('?');
-                        var ctrl = separate[0];
-                        if (controllers[ctrl] && controllers[ctrl][d])
-                            _fncs.push(controllers[ctrl][d].bind(controllers[ctrl]))
+                            if (controllers[controllerName] && controllers[controllerName][middlewareName]){
+                                let controller = controllers[controllerName];
+                                middlewareStack.push(controller[middlewareName].bind(controller));
+                            } else {
+                                throw new Error('Controller '+controllerName+' or middleware method '+middlewareName+' not defined');
+                            }
+                        }
                     }
                 }
-            })
-            _fncs.push(_getController(fnc));
-            return _fncs;
+            });
+            middlewareStack.push(resolveController(fnc));
+            return middlewareStack;
         }
 
         return {
@@ -88,16 +117,24 @@ liveRoutes.init = function (config) {
              *
              */
             publish:function (type,endPoint,callback,middlewares) {
-                var methods = [];
-                if(middlewares && typeof middlewares == 'object'){
-                    methods.push(_join(callback,middlewares));
+                let methods = [];
+                for(let i = 0; i < defaultMiddleware.length;i++){
+                    let middleware = defaultMiddleware[i];
+                    if(typeof middleware == "function"){
+                        methods.push(middleware);
+                    } else {
+                        console.error("Requested Default Middleware is not a function");
+                    }
+                }
+                if( middlewares && typeof middlewares == 'object' ){
+                    methods.push(resolveMiddleware(callback,middlewares));
                 }else{
-                    methods.push(_getController(callback));
+                    methods.push(resolveController(callback));
                 }
                 router[type](endPoint,methods)
             },
             /**
-             * Metodo que devuleve el objeto router de express que contiene las rutas del api
+             * Metodo que devuleve la objeto router de espress que contiene las rutas del api
              *
              * @author Jefferson Lara
              * @date 08-10-2016
@@ -106,13 +143,8 @@ liveRoutes.init = function (config) {
             getPublish:function () {
                 return router;
             }
-
         }
-
-
     })();
-
-
     return mapRoputes;
 }
 
