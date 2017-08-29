@@ -59,7 +59,7 @@ EJEMPLO COMPLETO
 var path = require('path');
 var express = require('express');
 var app = express();
-var lightRoutes = require("live-routes");
+var lightRoutes = require("light-routes");
 
 var routes = lightRoutes.init({
     pathControllers:path.join(__dirname,'controllers'),
